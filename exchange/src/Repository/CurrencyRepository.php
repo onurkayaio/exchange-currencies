@@ -16,6 +16,15 @@ class CurrencyRepository extends ServiceEntityRepository
         parent::__construct($registry, $this->entityClass);
     }
 
+    public function findCurrencies()
+    {
+        $qb = $this->createQueryBuilder('c')->select('c');
+
+        $result = $qb->getQuery()->getResult(Query::HYDRATE_ARRAY);
+
+        return $result;
+    }
+
     public function getCurrenciesByProvider($provider)
     {
         $qb = $this->createQueryBuilder('c');
