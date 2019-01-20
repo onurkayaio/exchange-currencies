@@ -1,9 +1,17 @@
 # This file is the entry point to configure your own services.
 # Files in the packages/ subdirectory configure your dependencies.
 
+imports:
+    - { resource: clients.yml }
+
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    provider_one_url: 'http://www.mocky.io/v2/5a74519d2d0000430bfe0fa0'
+    provider_two_url: 'http://www.mocky.io/v2/5a74524e2d0000430bfe0fa3'
+    client_content_type: application/json
+    client_timeout: 30
+    client_connect_timeout: 5
 
 services:
     # default configuration for services in *this* file
@@ -22,3 +30,36 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    App\Command\FetchCurrenciesCommand:
+        class: App\Command\FetchCurrenciesCommand
+        public: true
+        autowire: true
+        autoconfigure: false
+        arguments:
+            - '@service_container'
+            - '@doctrine.orm.default_entity_manager'
+            - '@App\Repository\CurrencyRepository'
+        tags:
+            - { name: 'console.command', command: 'fetch:currencies' }
+
+    App\Service\Adapter\ProviderOne:
+        class: App\Service\Adapter\ProviderOne
+        public: true
+        autowire: true
+        arguments:
+            - '@provider_one_client'
+        tags:
+            - { name: exchange.provider.method }
+
+    App\Service\Adapter\ProviderTwo:
+        class: App\Service\Adapter\ProviderTwo
+        public: true
+        autowire: true
+        arguments:
+            - '@provider_two_client'
+        tags:
+            - { name: exchange.provider.method }
+
+    exchange.provider.context:
+        class: App\Context\ExchangeProviderContext

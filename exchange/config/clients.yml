@@ -1,0 +1,46 @@
+parameters:
+    client_config:
+        base_uri: ~
+        defaults:
+            timeout: '%client_timeout%'
+            connect_timeout: '%client_connect_timeout%'
+            verify: false
+            headers:
+                content-type: '%client_content_type%'
+
+    provider_one_client_config:
+        base_uri: '%provider_one_url%'
+        defaults:
+            timeout: '%client_timeout%'
+            verify: false
+            connect_timeout: '%client_connect_timeout%'
+            headers:
+                content-type: '%client_content_type%'
+
+    provider_two_client_config:
+        base_uri: '%provider_two_url%'
+        defaults:
+            timeout: '%client_timeout%'
+            connect_timeout: '%client_connect_timeout%'
+            verify: false
+            headers:
+                content-type: '%client_content_type%'
+
+services:
+    _defaults:
+        public: true
+
+    # Default HTTP Client service
+    client:
+        class: GuzzleHttp\Client
+        arguments: ['%client_config%']
+
+    # Provider One HTTP Client service
+    provider_one_client:
+        class: GuzzleHttp\Client
+        arguments: ['%provider_one_client_config%']
+
+    # Provider Two HTTP Client service
+    provider_two_client:
+        class: GuzzleHttp\Client
+        arguments: ['%provider_two_client_config%']
