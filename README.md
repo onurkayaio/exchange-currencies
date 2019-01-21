@@ -12,7 +12,7 @@ clone the repository and go into the project directory.
 use make file to run the application.
 
 `make docker-start`  
-`make docker-start`  
+`make docker-stop`  
 `make composer-start`  
 `make doctrine-start`  
 `make doctrine-update`  
